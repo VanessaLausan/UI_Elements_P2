@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">UI_Elements_P2</string>
+    <string name="queuesdsong">Queued Songs</string>
+    <string name="albumcover">Album Cover</string>
+    <string name="addtoqueue">add to queue</string>
+    <string name="addtooqueque">Add to Queue</string>
+    <string name="albummz">Albums</string>
+    <string name="alb">Album</string>
+</resources>
