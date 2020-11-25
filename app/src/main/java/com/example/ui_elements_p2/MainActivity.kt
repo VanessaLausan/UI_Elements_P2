@@ -7,31 +7,32 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import com.google.android.material.snackbar.Snackbar
+    val queuedSongs = ArrayList<String>() //Array where all the songs queued will be stored and will be passed to the Queue activity
+    val songsArray = arrayListOf<String>()
 
 class MainActivity : AppCompatActivity() {
-
-    val queueListView = ArrayList<String>() //Array where all the songs queued will be stored and will be passed to the Queue activity
-    val songsArray = arrayOf(
-        "At My Worst", "Sofia", "Pastlives", "Mad at Disney", "Electric Love",  "Lemon Tree",//Chill Songs
-        "Hooked", "Believer", "Bad Liar", "Roxanne", "Teeth", "Circles",//Rock
-        "River", "Unworthy of Your Love", "Vienna", "Runaway",//the politician
-        "Grow as we go", "Better",  "Butter cup",  "Turn Back Time", "Leaving on A Jet Plane", "Temporary Love",//Acoustics
-        "End Game", "Delicate", "Dress", "Gateway Car", "I Did Something Bad", "Call It What You Want", "Gorgeous",//Reputation
-    "Not Afraid Anymore",  "Nightmare", "Bad at Love", "Alone", "Without Me", "Finally", "Graveyard") //Badland by Halsey
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
 
-        //list view adapter
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, songsArray)
-        val songsListView = findViewById<ListView>(R.id.songsListView)
+        //Add the songs
+        songsArray.addAll(resources.getStringArray(R.array.Halsey))
+        songsArray.addAll(resources.getStringArray(R.array.Reputation))
+        songsArray.addAll(resources.getStringArray(R.array.The_Politician))
+
+        //Map the views
+        var songsListView = findViewById<ListView>(R.id.songsListView)
+        //Adapter for the list view
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songsArray)
         songsListView.adapter = adapter
 
-        val listView = findViewById<ListView>(R.id.songsListView)
-        registerForContextMenu(listView)
+        //Register the context menu to the List View
+        registerForContextMenu(songsListView)
+
     }
+
     //Context Menu
     override fun onCreateContextMenu(
             menu: ContextMenu?,
@@ -42,11 +43,18 @@ class MainActivity : AppCompatActivity() {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.add_to_queue, menu)
     }
+
     override fun onContextItemSelected(item: MenuItem): Boolean {
         val menuInfo = item.menuInfo as AdapterView.AdapterContextMenuInfo //Allows us to inherit from the class Adapterview.AdapterCOntextMenuInfo to get the position
         return when (item.itemId) {
             R.id.add_song_to_queue -> {
-                queueListView.add(songsArray[menuInfo.position])
+                queuedSongs.add(songsArray[menuInfo.position])
+                val snackbar = Snackbar.make(findViewById(R.id.songsListView), "${songsArray[menuInfo.position]} is added to the Queue.", Snackbar.LENGTH_LONG)
+                snackbar.setAction("Queue", View.OnClickListener { //Lamda function
+                    val intent = Intent(this, QueueActivity::class.java)
+                    startActivity(intent)
+                })
+                snackbar.show()
                 true
             }
             else -> {
@@ -56,30 +64,35 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-    //main menu
+
+
+    //Main Menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.menu, menu)
+        return super.onCreateOptionsMenu(menu)
         return true
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-
-            R.id.go_to_albums -> {
-                startActivity(Intent(this, AlbumActivity::class.java))
-                true
-            }
             R.id.go_to_songs -> {
                 startActivity(Intent(this, MainActivity::class.java))
                 true
             }
+            R.id.go_to_albums -> {
+                startActivity(Intent(this, AlbumActivity::class.java))
+                true
+            }
             R.id.go_to_queue -> {
                 val intent = Intent(this, QueueActivity::class.java)
-                intent.putStringArrayListExtra("songs", queueListView)
                 startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
+
         }
+
+
     }
 }

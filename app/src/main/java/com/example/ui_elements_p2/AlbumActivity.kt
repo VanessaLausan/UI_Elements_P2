@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.widget.AdapterView
 import android.widget.GridView
 
+var albumSongs = ArrayList<String>()
+var albumURI = String
+
 class AlbumActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,28 +19,33 @@ class AlbumActivity : AppCompatActivity() {
         //Attach the adapter to the Grid View
         GridView.adapter = ImageAdapter(applicationContext)
         //Item click listener for the Grid View
-        GridView.onItemClickListener = AdapterView.OnItemClickListener { parent, v, position, id ->
+        GridView.onItemClickListener = AdapterView.OnItemClickListener{parent, v, position, id ->
             val intent = Intent(this, AlbumDetailsActivity::class.java)
-            var songsToBeDisplayed = arrayListOf<String>()
-            var uri: String = ""
+            var uri: String
             if (position == 0) {
                 uri = "@drawable/halsey"
-                songsToBeDisplayed.clear()
-                songsToBeDisplayed.addAll(resources.getStringArray(R.array.Halsey))
+                albumSongs.clear()
+                albumSongs.addAll(resources.getStringArray(R.array.Halsey))
             } else if (position == 1) {
-                uri = "@drawable/the_politician1"
-                songsToBeDisplayed.clear()
-                songsToBeDisplayed.addAll(resources.getStringArray(R.array.The_Politician))
+                uri = "@drawable/the_politician"
+                albumSongs.clear()
+                albumSongs.addAll(resources.getStringArray(R.array.The_Politician))
             } else {
                 uri = "@drawable/reputation"
-                songsToBeDisplayed.clear()
-                songsToBeDisplayed.addAll(resources.getStringArray(R.array.Reputation))
+                albumSongs.clear()
+                albumSongs.addAll(resources.getStringArray(R.array.Reputation))
             }
-            intent.putStringArrayListExtra("songs", songsToBeDisplayed)
-            intent.putExtra("imageUri", uri)
-            intent.putExtra("position", position)
+            intent.putExtra("imageUri",  uri)
             startActivity(intent)
 
+
         }
+
+
+
     }
+
+
+
+
 }
